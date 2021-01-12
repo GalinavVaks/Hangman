@@ -1,13 +1,15 @@
 import hangman_ascii_art
+import os 
 
 def hangman():
-    """ Play hangman
+    """ Play hangman. Requires the user enter a space-separated dictionary file,
+        of which one is randomly chosen as the secret word
     """
+    clear_screen()
     hangman_ascii_art.splash_screen()
     MAX_TRIES = 6
     words_path = input("Please enter the path to the words' file: ")
-    word_num = int(input("Please select an index (starting from 1): "))
-    secret_word = choose_word(words_path, word_num)
+    secret_word = choose_word(words_path)
     print("You have %d attempts." % MAX_TRIES)
     old_letters_guessed = [] # Accumulates guessed letters
     failed_tries = 0 
@@ -27,15 +29,21 @@ def hangman():
 
     if failed_tries >= MAX_TRIES: # The while loop ended without a win break
         print("LOSE. The word was %s." % secret_word)
-            
-def choose_word(file_path, index):
-    """ Return the index-th word in the file(counting from 1).
-        If there are more than index words, we're counting
-        circularly (modulo)
+
+def clear_screen(): 
+    """ Clears the console screen
+    """ 
+    if os.name == 'nt': 
+        os.system('cls') 
+    else: 
+        os.system('clear')             
+
+def choose_word(file_path):
+    """ Return a random word from the file
     """
     with open(file_path, "r") as input_file:
         words = input_file.read().split(" ")
-    return words[(index-1)%len(words)]  
+    return words[randrange(len(words))]  
     
 def show_hidden_word(secret_word, old_letters_guessed):
     """ Return a string showing what was guessed so far
