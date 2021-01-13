@@ -1,5 +1,6 @@
 import hangman_ascii_art
-import os 
+from os import name, system
+from random import randrange
 
 def hangman():
     """ Play hangman. Requires the user enter a space-separated dictionary file,
@@ -18,14 +19,18 @@ def hangman():
         print(show_hidden_word(secret_word, old_letters_guessed))
         guessed_letter = input("Please enter a letter: ")
         while not try_update_letter_guessed(guessed_letter, old_letters_guessed):
-            guessed_letter = input("Try again. Enter a letter: ")
-        print(show_hidden_word(secret_word, old_letters_guessed))
+            guessed_letter = input("Try again. Enter a single letter: ")
+        if guessed_letter in secret_word:
+            print("Correct")
+        else:
+            print("Incorrect")
+            failed_tries += 1
         if check_win(secret_word, old_letters_guessed):
+            print(show_hidden_word(secret_word, old_letters_guessed))
             print("WIN")
             break 
-        elif guessed_letter not in secret_word:
-            print(":(")
-            failed_tries += 1
+        
+            
 
     if failed_tries >= MAX_TRIES: # The while loop ended without a win break
         print("LOSE. The word was %s." % secret_word)
@@ -33,10 +38,10 @@ def hangman():
 def clear_screen(): 
     """ Clears the console screen
     """ 
-    if os.name == 'nt': 
-        os.system('cls') 
+    if name == 'nt': # Operation system name
+        system('cls') 
     else: 
-        os.system('clear')             
+        system('clear')             
 
 def choose_word(file_path):
     """ Return a random word from the file
